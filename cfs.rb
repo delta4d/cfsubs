@@ -5,36 +5,36 @@ require 'open-uri'
 
 # submitted language to file extension
 class Lang2lang
-	@@transform_table = {
-		'gnu_c' => 'c',
-		'gnu_c++' => 'cpp',
-		'gnu_c++0x' => 'cpp',
-		'ms_c++' => 'cpp',
-		'mono_c#' => 'cs',
-		'ms_c#' => 'cs',
-		'd' => 'd',
-		'go' => 'go',
-		'haskell' => 'hs',
-		'java_6' => 'java',
-		'java_7' => 'java',
-		'java_8' => 'java',
-		'ocaml' => 'ml',
-		'delphi' => 'dpk',
-		'fpc' => 'pp',
-		'perl' => 'pl',
-		'php' => 'php',
-		'python_2' => 'py',
-		'python_3' => 'py',
-		'ruby' => 'rb',
-		'scala' => 'scala',
-		'javascript' => 'js'
-	}
-	class << self
-		def file_extension key
-			@@transform_table[key]
-		end
-		alias :'[]' :file_extension
-	end
+  @@transform_table = {
+    'gnu_c' => 'c',
+    'gnu_c++' => 'cpp',
+    'gnu_c++0x' => 'cpp',
+    'ms_c++' => 'cpp',
+    'mono_c#' => 'cs',
+    'ms_c#' => 'cs',
+    'd' => 'd',
+    'go' => 'go',
+    'haskell' => 'hs',
+    'java_6' => 'java',
+    'java_7' => 'java',
+    'java_8' => 'java',
+    'ocaml' => 'ml',
+    'delphi' => 'dpk',
+    'fpc' => 'pp',
+    'perl' => 'pl',
+    'php' => 'php',
+    'python_2' => 'py',
+    'python_3' => 'py',
+    'ruby' => 'rb',
+    'scala' => 'scala',
+    'javascript' => 'js'
+  }
+  class << self
+    def file_extension key
+      @@transform_table[key]
+    end
+    alias :'[]' :file_extension
+  end
 end
 
 # program basic usage
@@ -49,19 +49,19 @@ def usage
 end
 
 # get pagination number of all the submissions
-def	get_page_num url
-	page = Nokogiri::HTML(open(url))
-	page.css('span[class=page-index]')[-1]['pageindex'].to_i
+def  get_page_num url
+  page = Nokogiri::HTML(open(url))
+  page.css('span[class=page-index]')[-1]['pageindex'].to_i
 end
 
 # get submission url of specific user
 def get_sub_url username
-	'http://codeforces.com/submissions/' + username
+  'http://codeforces.com/submissions/' + username
 end
 
 # get url of specific pagination id
 def get_sub_url_i username, page_id
-	'http://codeforces.com/submissions/' + username + '/page/' + page_id
+  'http://codeforces.com/submissions/' + username + '/page/' + page_id
 end
 
 # get source url of specific submission id
@@ -78,27 +78,27 @@ end
 
 # get all submissions on a specific submissoin page
 def get_all_subs url
-	page = Nokogiri::HTML(open(url))
+  page = Nokogiri::HTML(open(url))
 #  page = Nokogiri::HTML(File.open('out.html'))
-	page.css('tr[data-submission-id]').each do |e|
-		info = e.css('td')
+  page.css('tr[data-submission-id]').each do |e|
+    info = e.css('td')
     sub_id = info.css('a[class="view-source"]').text
     problem_name = info.css('td[class="status-small"]').css('a').text.split[0]
     contest_id = problem_name[0..-2]
     lang = info[4].text.strip.gsub(/\s+/, '_').downcase
     verdict = info.css('span[class="submissionVerdictWrapper"]')[0]['submissionverdict']
     yield sub_id, contest_id, problem_name, lang, verdict
-	end
+  end
 end
 
 # get codeforces submitted source files
 def get_source_file username, lang_op='all', limit=-1
-	sub_url = get_sub_url username
-	page_num = get_page_num sub_url
+  sub_url = get_sub_url username
+  page_num = get_page_num sub_url
   tot_subs = 0
-	page_num.times do |i|
-		sub_url_i = get_sub_url_i username, (i + 1).to_s
-		get_all_subs sub_url_i do |sub_id, contest_id, problem_name, lang, verdict|
+  page_num.times do |i|
+    sub_url_i = get_sub_url_i username, (i + 1).to_s
+    get_all_subs sub_url_i do |sub_id, contest_id, problem_name, lang, verdict|
       puts "#{tot_subs+1}: #{sub_id} #{contest_id} #{problem_name} #{lang} #{verdict}"
       tot_subs += 1
       if verdict == 'OK'
