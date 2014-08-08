@@ -101,7 +101,7 @@ def get_source_file username, lang_op='all', limit=-1
     get_all_subs sub_url_i do |sub_id, contest_id, problem_name, lang, verdict|
       puts "#{tot_subs+1}: #{sub_id} #{contest_id} #{problem_name} #{lang} #{verdict}"
       tot_subs += 1
-      if verdict == 'OK'
+      if contest_id.length < 4 && verdict == 'OK'
         file_ext = Lang2lang[lang]
         file_name = problem_name + '.' + file_ext
         if !File.exist?(file_name) && (lang_op == 'all' || lang_op == file_ext)
