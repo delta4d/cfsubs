@@ -31,7 +31,9 @@ class Lang2lang
   }
   class << self
     def file_extension key
-      @@transform_table[key]
+      fe = @@transform_table[key]
+      fe = key if fe.nil?
+      fe
     end
     alias :'[]' :file_extension
   end
